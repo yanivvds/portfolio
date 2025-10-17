@@ -6,39 +6,33 @@ import Chip from '@mui/material/Chip';
 import '../assets/styles/Expertise.scss';
 
 const labelsFirst = [
-    "React",
-    "TypeScript",
-    "JavaScript",
-    "HTML5",
-    "CSS3",
-    "SASS",
-    "Flask",
     "Python",
-    "SQL",
-    "PostgreSQL",
-    "Postman"
+    "PyTorch",
+    "Machine Learning & AI",
+    "OpenAI API Integration",
+    "Content Matching Algorithms"
 ];
 
 const labelsSecond = [
-    "Git",
-    "GitHub Actions",
-    "Docker",
-    "AWS",
-    "Azure",
-    "Linux",
-    "Snowflake",
-    "Pandas",
-    "Selenium",
+    "Next.js",
+    "TypeScript",
+    "JavaScript",
+    "React Native Development",
+    "iOS App Development",
+    "Real-Time Audio Processing",
+    "WebSocket Communication",
+    "API Integration",
+    "Database Architecture"
 ];
 
 const labelsThird = [
-    "OpenAI",
-    "Groq",
-    "LangChain",
-    "Qdrant",
-    "Hugging Face",
-    "LlamaIndex",
-    "Streamlit",
+    "Azure",
+    "Azure Functions",
+    "Microsoft SQL Server",
+    "Supabase",
+    "Vercel",
+    "n8n",
+    "Agile Development (Scrum)"
 ];
 
 function Expertise() {
@@ -48,9 +42,9 @@ function Expertise() {
             <h1>Expertise</h1>
             <div className="skills-grid">
                 <div className="skill">
-                    <FontAwesomeIcon icon={faReact} size="3x"/>
-                    <h3>Full Stack Web Development</h3>
-                    <p>I have built a diverse array of web applications from scratch using modern technologies such as React and Flask. I have a strong proficiency in the SDLC process and frontend + backend development.</p>
+                    <FontAwesomeIcon icon={faPython} size="3x"/>
+                    <h3>AI & Machine Learning</h3>
+                    <p>As an AI student at UvA, I specialize in developing intelligent solutions using cutting-edge AI technologies. I have hands-on experience with machine learning algorithms, neural networks, and integrating AI APIs into practical applications.</p>
                     <div className="flex-chips">
                         <span className="chip-title">Tech stack:</span>
                         {labelsFirst.map((label, index) => (
@@ -60,9 +54,9 @@ function Expertise() {
                 </div>
 
                 <div className="skill">
-                    <FontAwesomeIcon icon={faDocker} size="3x"/>
-                    <h3>DevOps & Automation</h3>
-                    <p>Once the application is built, I help clients set up DevOps testing, CI/CD pipelines, and deployment automation to support the successful Go-Live.</p>
+                    <FontAwesomeIcon icon={faReact} size="3x"/>
+                    <h3>Full-Stack Development</h3>
+                    <p>I build end-to-end web and mobile applications with modern frameworks and real-time capabilities. My experience spans from responsive web apps to native mobile development, with expertise in API integration and database architecture.</p>
                     <div className="flex-chips">
                         <span className="chip-title">Tech stack:</span>
                         {labelsSecond.map((label, index) => (
@@ -72,9 +66,9 @@ function Expertise() {
                 </div>
 
                 <div className="skill">
-                    <FontAwesomeIcon icon={faPython} size="3x"/>
-                    <h3>GenAI & LLM</h3>
-                    <p>Stay relevant in the market by leveraging the latest AI models in your projects. I have professional experience building enterprise grade GenAI-enabled solutions to empower intelligent decision making.</p>
+                    <FontAwesomeIcon icon={faDocker} size="3x"/>
+                    <h3>Cloud & DevOps</h3>
+                    <p>I leverage cloud platforms and modern development practices to build scalable, automated solutions. With Azure certification and experience in CI/CD pipelines, I ensure applications are production-ready and efficiently deployed.</p>
                     <div className="flex-chips">
                         <span className="chip-title">Tech stack:</span>
                         {labelsThird.map((label, index) => (
