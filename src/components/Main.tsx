@@ -4,12 +4,14 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import profileImage from '../assets/images/profile.jpeg';
 import '../assets/styles/Main.scss';
+import Threads from './Threads';
 
 function Main() {
 
   return (
     <div className="container">
       <div className="about-section">
+        <Threads className="threads-canvas" color={[1,0.165,0.65]} color2={[0.42,0,1]} amplitude={2} distance={0.4} enableMouseInteraction={true} />
         <div className="image-wrapper">
           <img src={profileImage} alt="Avatar" />
         </div>

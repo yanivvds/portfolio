@@ -10,6 +10,7 @@ import {
 } from "./components";
 import FadeIn from './components/FadeIn';
 import './index.scss';
+import Threads from './components/Threads';
 
 function App() {
     const [mode, setMode] = useState<string>('dark');
@@ -22,10 +23,9 @@ function App() {
         }
     }
 
-    useEffect(() => {
-        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
-      }, []);
-
+        useEffect(() => {
+                window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+            }, []);
     return (
     <div className={`main-container ${mode === 'dark' ? 'dark-mode' : 'light-mode'}`}>
         <Navigation parentToChild={{mode}} modeChange={handleModeChange}/>
@@ -33,7 +33,7 @@ function App() {
             <Main/>
             <Expertise/>
             <Timeline/>
-            <Project/>
+            <Project parentToChild={{mode}}/>
             <Contact parentToChild={{mode}}/>
         </FadeIn>
         <Footer />

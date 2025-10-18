@@ -7,14 +7,12 @@
     gap: 30px;
     justify-content: flex-start;
     align-items: center;
+    position: relative;
+    overflow: hidden; /* clip the threads canvas to this section */
     width: 100%;
     padding: 0px 15%;
     min-height: 700px;
-    background-image: url("../images/bg-dark.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
+    /* background image replaced by Canvas Threads component */
 }
 
 .about-section .content {
@@ -72,7 +70,7 @@
 
         .location-icon {
             font-size: 1.2em;
-            color: #ff6b35;
+            color: #ff2aa6; /* brand pink to match Threads gradient */
         }
 
         span {
