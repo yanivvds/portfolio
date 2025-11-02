@@ -31,6 +31,8 @@ function Project({ parentToChild, openChatWithMessage }: { parentToChild?: { mod
     const [showTravelModal, setShowTravelModal] = useState(false);
     const [showKPNModal, setShowKPNModal] = useState(false);
     const [showTagJeTafelModal, setShowTagJeTafelModal] = useState(false);
+    const [showVideoModal, setShowVideoModal] = useState(false);
+    const [currentVideo, setCurrentVideo] = useState<string>('');
     
     // Get current theme from props
     const mode = parentToChild?.mode || 'dark';
@@ -39,6 +41,12 @@ function Project({ parentToChild, openChatWithMessage }: { parentToChild?: { mod
     // Generate simple initial message for AI chat
     const getAIInitialMessage = (projectName: string) => {
         return `Tell me more about the ${projectName} project`;
+    };
+
+    // Handle video modal opening
+    const openVideoModal = (videoSrc: string) => {
+        setCurrentVideo(videoSrc);
+        setShowVideoModal(true);
     };
 
     return(
@@ -210,11 +218,11 @@ function Project({ parentToChild, openChatWithMessage }: { parentToChild?: { mod
                             <h4><DescriptionIcon className="modal-item-icon" /> Pitch Deck</h4>
                             <p>View the comprehensive pitch deck for the KPN Easy Mode project</p>
                         </div>
-                        <div className="travel-modal-item" onClick={() => window.open(KPNeasyModeVideo, '_blank')}>
+                        <div className="travel-modal-item" onClick={() => openVideoModal(KPNeasyModeVideo)}>
                             <h4><VideocamIcon className="modal-item-icon" /> Easy Mode Preview</h4>
                             <p>Click to view the video</p>
                         </div>
-                        <div className="travel-modal-item" onClick={() => window.open(KPNkatVideo, '_blank')}>
+                        <div className="travel-modal-item" onClick={() => openVideoModal(KPNkatVideo)}>
                             <h4><VideocamIcon className="modal-item-icon" /> KPN Kat Recording</h4>
                             <p>Click to view the video</p>
                         </div>
@@ -250,6 +258,33 @@ function Project({ parentToChild, openChatWithMessage }: { parentToChild?: { mod
                             <h4><VideocamIcon className="modal-item-icon" /> Business demo</h4>
                             <p>Explore the business interface</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* Video Modal */}
+        {showVideoModal && (
+            <div className="video-modal-overlay" onClick={() => setShowVideoModal(false)}>
+                <div className={`video-modal ${isDarkMode ? 'dark' : 'light'}`} onClick={(e) => e.stopPropagation()}>
+                    <div className="video-modal-header">
+                        <button
+                            className="video-modal-close"
+                            onClick={() => setShowVideoModal(false)}
+                            aria-label="Close video modal"
+                        >
+                            ×
+                        </button>
+                    </div>
+                    <div className="video-modal-content">
+                        <video
+                            controls
+                            autoPlay
+                            className="video-player"
+                            src={currentVideo}
+                        >
+                            Your browser does not support the video tag.
+                        </video>
                     </div>
                 </div>
             </div>
