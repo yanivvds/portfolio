@@ -612,6 +612,7 @@
 .chatbot-message {
   display: flex;
   margin-bottom: 8px;
+  animation: messageSlideIn 0.3s ease-out;
   
   &.user {
     justify-content: flex-end;
@@ -843,6 +844,26 @@
   30% {
     transform: translateY(-10px);
     opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes messageSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

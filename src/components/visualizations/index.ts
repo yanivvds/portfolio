@@ -1,1 +1,1 @@
-export {};
+export { default as TechStackVisualization } from './TechStackVisualization';

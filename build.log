@@ -1,0 +1,83 @@
+
+> yaniv-portfolio@1.0.0 build
+> react-scripts build
+
+Creating an optimized production build...
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Compiled with warnings.
+
+[eslint] 
+src/components/Contact.tsx
+  Line 62:16:  'setName' is assigned a value but never used             @typescript-eslint/no-unused-vars
+  Line 63:17:  'setEmail' is assigned a value but never used            @typescript-eslint/no-unused-vars
+  Line 64:19:  'setMessage' is assigned a value but never used          @typescript-eslint/no-unused-vars
+  Line 65:10:  'nameError' is assigned a value but never used           @typescript-eslint/no-unused-vars
+  Line 66:10:  'emailError' is assigned a value but never used          @typescript-eslint/no-unused-vars
+  Line 67:10:  'messageError' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  Line 69:9:   'form' is assigned a value but never used                @typescript-eslint/no-unused-vars
+  Line 82:5:   'setChatMessages' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  Line 86:5:   'setIsTyping' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  Line 88:5:   'setShowSuggestions' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 90:5:   'getChatbotResponse' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  Line 833:9:  'sendEmail' is assigned a value but never used           @typescript-eslint/no-unused-vars
+
+src/components/Project.tsx
+  Line 6:8:   'PsychologyIcon' is defined but never used  @typescript-eslint/no-unused-vars
+  Line 7:8:   'ChatIcon' is defined but never used        @typescript-eslint/no-unused-vars
+  Line 11:8:  'mock01' is defined but never used          @typescript-eslint/no-unused-vars
+  Line 13:8:  'mock02' is defined but never used          @typescript-eslint/no-unused-vars
+  Line 14:8:  'mock03' is defined but never used          @typescript-eslint/no-unused-vars
+  Line 15:8:  'mock04' is defined but never used          @typescript-eslint/no-unused-vars
+  Line 16:8:  'mock05' is defined but never used          @typescript-eslint/no-unused-vars
+  Line 17:8:  'mock06' is defined but never used          @typescript-eslint/no-unused-vars
+  Line 18:8:  'mock07' is defined but never used          @typescript-eslint/no-unused-vars
+  Line 20:8:  'mock09' is defined but never used          @typescript-eslint/no-unused-vars
+  Line 21:8:  'mock10' is defined but never used          @typescript-eslint/no-unused-vars
+
+src/components/TestPage.tsx
+  Line 3:3:  'Main' is defined but never used  @typescript-eslint/no-unused-vars
+
+src/components/Threads.tsx
+  Line 254:5:  React Hook useEffect has missing dependencies: 'color2' and 'verticalOffset'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+File sizes after gzip:
+
+  153.69 kB  build/static/js/main.26c1e932.js
+  6.85 kB    build/static/css/main.0c905444.css
+  1.78 kB    build/static/js/453.af57a582.chunk.js
+
+The project was built assuming it is hosted at /portfolio/.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+
+/Users/yanivvanderstigchel/Docs/projects/portfolio/node_modules/react-scripts/scripts/build.js:19
+  throw err;
+  ^
+
+Error: kill EPERM
+    at ChildProcess.kill (node:internal/child_process:511:26)
+    at Object.<anonymous> (/Users/yanivvanderstigchel/Docs/projects/portfolio/node_modules/fork-ts-checker-webpack-plugin/lib/rpc/rpc-ipc/RpcIpcMessagePort.js:144:30)
+    at Generator.next (<anonymous>)
+    at fulfilled (/Users/yanivvanderstigchel/Docs/projects/portfolio/node_modules/fork-ts-checker-webpack-plugin/lib/rpc/rpc-ipc/RpcIpcMessagePort.js:5:58)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+Emitted 'error' event on ChildProcess instance at:
+    at ChildProcess.kill (node:internal/child_process:511:12)
+    at Object.<anonymous> (/Users/yanivvanderstigchel/Docs/projects/portfolio/node_modules/fork-ts-checker-webpack-plugin/lib/rpc/rpc-ipc/RpcIpcMessagePort.js:144:30)
+    [... lines matching original stack trace ...]
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  errno: -1,
+  code: 'EPERM',
+  syscall: 'kill'
+}
+
+Node.js v22.14.0

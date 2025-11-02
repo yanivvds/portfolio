@@ -8,6 +8,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import TechStackVisualization from './visualizations/TechStackVisualization';
 
 function Contact({ parentToChild, chatProps }: { 
   parentToChild?: { mode: string }, 
@@ -26,12 +27,38 @@ function Contact({ parentToChild, chatProps }: {
     getChatbotResponse: (message: string) => Promise<any>;
     handleSuggestionClick: (question: string) => void;
     handleSendMessage: (message: string) => void;
+    currentLoadingMessage: string;
   }
 }) {
   const mode = parentToChild?.mode || 'dark';
   const isDarkMode = mode === 'dark';
 
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+
+  // Shared styles for consistent visualization appearance
+  const visualizationStyles = {
+    container: {
+      margin: '12px 0',
+      padding: '16px',
+      background: isDarkMode ? 'rgba(17,24,39,0.6)' : '#fff',
+      borderRadius: '12px',
+      boxShadow: isDarkMode ? '0 8px 32px rgba(15,23,42,0.6)' : '0 8px 32px rgba(15,23,42,0.08)',
+      border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(15,23,42,0.06)'}`
+    },
+    title: {
+      margin: '0 0 16px 0',
+      color: isDarkMode ? '#e9d5ff' : '#7c3aed',
+      fontSize: '16px',
+      fontWeight: 600
+    },
+    cardBase: {
+      padding: '12px 16px',
+      borderRadius: '8px',
+      background: isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+      border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+      transition: 'all 0.2s ease'
+    }
+  };
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -62,7 +89,8 @@ function Contact({ parentToChild, chatProps }: {
     suggestedQuestions,
     getChatbotResponse,
     handleSuggestionClick,
-    handleSendMessage
+    handleSendMessage,
+    currentLoadingMessage
   } = chatProps || {
     isChatOpen: false,
     setIsChatOpen: () => {},
@@ -77,7 +105,8 @@ function Contact({ parentToChild, chatProps }: {
     suggestedQuestions: [],
     getChatbotResponse: () => Promise.resolve(''),
     handleSuggestionClick: () => {},
-    handleSendMessage: () => {}
+    handleSendMessage: () => {},
+    currentLoadingMessage: ''
   };
 
   // Render message content with clickable suggestions and interactive elements
@@ -85,6 +114,7 @@ function Contact({ parentToChild, chatProps }: {
     const content = typeof message === 'string' ? message : message.content || '';
     const followUpQuestions = message.followUpQuestions || [];
     const interactiveElement = message.interactiveElement;
+    const isStreaming = message.isStreaming;
 
     // Check if this is an initial introduction message with bullet points
     const hasBulletQuestions = content.includes("• What tech stack was used?") && content.includes("Here are some questions you can ask:");
@@ -114,72 +144,75 @@ function Contact({ parentToChild, chatProps }: {
   switch (interactiveElement.type) {
         case 'tech_stack':
           return (
-            <div style={{
-              margin: '12px 0',
-              padding: '14px',
-              background: isDarkMode ? 'rgba(17,24,39,0.6)' : '#fff',
-              borderRadius: '10px',
-              boxShadow: isDarkMode ? '0 6px 18px rgba(15,23,42,0.6)' : '0 6px 18px rgba(15,23,42,0.06)',
-              border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)'}`
-            }}>
-              <h4 style={{ margin: '0 0 10px 0', color: isDarkMode ? '#e9d5ff' : '#7c3aed', fontSize: '15px' }}>
-                {interactiveElement.content}
-              </h4>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                {interactiveElement.metadata?.technologies?.map((tech: any, index: number) => (
-                  <div key={index} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '8px 12px',
-                    background: isDarkMode ? 'rgba(124,58,237,0.06)' : 'rgba(124,58,237,0.06)',
-                    borderRadius: '999px',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    color: isDarkMode ? '#e9d5ff' : '#4c1d95'
-                  }}>
-                    {tech.icon_url ? (
-                      <img src={tech.icon_url} alt={`${tech.name} icon`} style={{ width: 16, height: 16, borderRadius: 4 }} />
-                    ) : (
-                      <span style={{ fontSize: 14 }}>{tech.icon || '•'}</span>
-                    )}
-                    <span>{tech.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <TechStackVisualization
+              technologies={interactiveElement.metadata?.technologies || []}
+              title={interactiveElement.content}
+              isDarkMode={isDarkMode}
+            />
           );
 
         case 'timeline':
           return (
-            <div style={{ margin: '12px 0' }}>
-              <h4 style={{ margin: '0 0 10px 0', color: isDarkMode ? '#e9d5ff' : '#7c3aed', fontSize: '15px' }}>{interactiveElement.content}</h4>
-              <div style={{ display: 'flex', gap: 12 }}>
-                <div style={{ width: 44, display: 'flex', justifyContent: 'center' }}>
-                  <div style={{ width: 2, background: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.06)', borderRadius: 2 }} />
-                </div>
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {interactiveElement.metadata?.events?.map((event: any, index: number) => (
-                    <div key={index} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                      <div style={{
-                        width: 38,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
+            <div style={visualizationStyles.container}>
+              <h4 style={visualizationStyles.title}>{interactiveElement.content}</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {interactiveElement.metadata?.events?.map((event: any, index: number) => (
+                  <div key={index} style={{
+                    ...visualizationStyles.cardBase,
+                    display: 'flex',
+                    gap: '16px',
+                    alignItems: 'flex-start'
+                  }}>
+                    <div style={{
+                      width: 48,
+                      height: 48,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: isDarkMode ? 'rgba(124,58,237,0.1)' : 'rgba(124,58,237,0.1)',
+                      borderRadius: '10px',
+                      flexShrink: 0
+                    }}>
+                      {event.icon_url ? (
+                        <img src={event.icon_url} alt="event icon" style={{ width: 24, height: 24, borderRadius: 6 }} />
+                      ) : (
+                        <div style={{ 
+                          width: 12, 
+                          height: 12, 
+                          borderRadius: '50%', 
+                          background: isDarkMode ? '#a78bfa' : '#7c3aed' 
+                        }} />
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ 
+                        fontWeight: 600, 
+                        color: isDarkMode ? '#f3e8ff' : '#111827',
+                        marginBottom: '4px',
+                        fontSize: '15px'
                       }}>
-                        {event.icon_url ? (
-                          <img src={event.icon_url} alt="event icon" style={{ width: 22, height: 22, borderRadius: 6 }} />
-                        ) : (
-                          <div style={{ width: 10, height: 10, borderRadius: '50%', background: isDarkMode ? '#a78bfa' : '#7c3aed' }} />
+                        {event.phase}
+                        {event.duration && (
+                          <span style={{ 
+                            fontWeight: 500, 
+                            color: isDarkMode ? '#c7b3f8' : '#6b21a8',
+                            marginLeft: '8px',
+                            fontSize: '14px'
+                          }}>
+                            · {event.duration}
+                          </span>
                         )}
                       </div>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 700, color: isDarkMode ? '#f3e8ff' : '#111827' }}>{event.phase} <span style={{ fontWeight: 600, color: isDarkMode ? '#c7b3f8' : '#6b21a8' }}>· {event.duration}</span></div>
-                        <div style={{ color: isDarkMode ? '#cbd5e1' : '#374151' }}>{event.description}</div>
+                      <div style={{ 
+                        color: isDarkMode ? '#cbd5e1' : '#374151',
+                        fontSize: '14px',
+                        lineHeight: '1.5'
+                      }}>
+                        {event.description}
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
           );
@@ -187,23 +220,90 @@ function Contact({ parentToChild, chatProps }: {
         case 'code_snippet':
           return (
             <div style={{
-              margin: '12px 0',
-              borderRadius: 10,
-              overflow: 'hidden',
-              boxShadow: isDarkMode ? '0 8px 24px rgba(2,6,23,0.6)' : '0 8px 24px rgba(15,23,42,0.06)'
+              ...visualizationStyles.container,
+              padding: 0,
+              overflow: 'hidden'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: isDarkMode ? '#0f1724' : '#f8fafc' }}>
-                <div style={{ fontWeight: 700, color: isDarkMode ? '#e9d5ff' : '#111827' }}>{interactiveElement.content}</div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <div style={{ fontSize: 12, color: isDarkMode ? '#c7b3f8' : '#6b21a8', padding: '4px 8px', borderRadius: 6, background: isDarkMode ? 'rgba(124,58,237,0.06)' : 'transparent' }}>{interactiveElement.metadata?.language}</div>
-                  <button onClick={() => { try { navigator.clipboard.writeText(interactiveElement.metadata?.code || ''); } catch(e){} }} style={{ border: 'none', background: 'transparent', color: isDarkMode ? '#cbd5e1' : '#374151', cursor: 'pointer' }}>Copy</button>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center', 
+                padding: '14px 16px',
+                background: isDarkMode ? 'rgba(15,23,42,0.8)' : '#f8fafc',
+                borderBottom: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`
+              }}>
+                <div style={{ 
+                  fontWeight: 600, 
+                  color: isDarkMode ? '#e9d5ff' : '#111827',
+                  fontSize: '15px'
+                }}>
+                  {interactiveElement.content}
+                </div>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                  {interactiveElement.metadata?.language && (
+                    <div style={{ 
+                      fontSize: 12, 
+                      color: isDarkMode ? '#c7b3f8' : '#6b21a8', 
+                      padding: '4px 10px', 
+                      borderRadius: 6, 
+                      background: isDarkMode ? 'rgba(124,58,237,0.1)' : 'rgba(124,58,237,0.1)',
+                      fontWeight: 500,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      {interactiveElement.metadata.language}
+                    </div>
+                  )}
+                  <button 
+                    onClick={() => { 
+                      try { 
+                        navigator.clipboard.writeText(interactiveElement.metadata?.code || ''); 
+                      } catch(e){} 
+                    }} 
+                    style={{ 
+                      border: 'none', 
+                      background: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                      color: isDarkMode ? '#cbd5e1' : '#374151', 
+                      cursor: 'pointer',
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+                    }}
+                  >
+                    Copy
+                  </button>
                 </div>
               </div>
-              <pre style={{ margin: 0, padding: 12, background: isDarkMode ? '#081022' : '#fff', color: isDarkMode ? '#dbeafe' : '#0f1724', fontSize: 13, overflow: 'auto' }}>
+              <pre style={{ 
+                margin: 0, 
+                padding: 16, 
+                background: isDarkMode ? 'rgba(8,16,34,0.8)' : '#fff', 
+                color: isDarkMode ? '#dbeafe' : '#0f1724', 
+                fontSize: 13, 
+                overflow: 'auto',
+                fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+                lineHeight: 1.5
+              }}>
                 <code>{interactiveElement.metadata?.code}</code>
               </pre>
               {interactiveElement.metadata?.explanation && (
-                <div style={{ padding: '8px 12px', background: isDarkMode ? '#071023' : '#f9fafb', color: isDarkMode ? '#9fb4ff' : '#374151' }}>{interactiveElement.metadata.explanation}</div>
+                <div style={{ 
+                  padding: '12px 16px', 
+                  background: isDarkMode ? 'rgba(7,16,35,0.6)' : '#f9fafb', 
+                  color: isDarkMode ? '#9fb4ff' : '#374151',
+                  fontSize: '14px',
+                  borderTop: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`
+                }}>
+                  {interactiveElement.metadata.explanation}
+                </div>
               )}
             </div>
           );
@@ -603,6 +703,17 @@ function Contact({ parentToChild, chatProps }: {
     return (
       <div>
         <div dangerouslySetInnerHTML={{ __html: highlightProjectName(content) }} />
+        {isStreaming && !content.includes('Thinking') && !content.includes('...') && (
+          <span style={{
+            display: 'inline-block',
+            width: '8px',
+            height: '16px',
+            background: `linear-gradient(45deg, ${isDarkMode ? '#8b5cf6' : '#7c3aed'}, ${isDarkMode ? '#a855f7' : '#8b5cf6'})`,
+            borderRadius: '2px',
+            marginLeft: '4px',
+            animation: 'blink 1.2s infinite'
+          }} />
+        )}
         {renderInteractiveElement()}
         {followUpQuestions.length > 0 && (
           <div style={{
@@ -830,13 +941,25 @@ function Contact({ parentToChild, chatProps }: {
                   </div>
                 </div>
               ))}
-              {isTyping && (
+              {isTyping && !chatMessages.some(msg => msg.isStreaming) && (
                 <div className="chatbot-message assistant typing">
                   <div className="chatbot-message-content">
-                    <div className="typing-indicator">
-                      <span></span>
-                      <span></span>
-                      <span></span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div className="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                      {currentLoadingMessage && (
+                        <div style={{
+                          color: isDarkMode ? '#cbd5e1' : '#6b7280',
+                          fontSize: '14px',
+                          fontStyle: 'italic',
+                          opacity: 0.8
+                        }}>
+                          {currentLoadingMessage}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
