@@ -10,6 +10,17 @@
     color: rgba(255, 255, 255, 0.8);
     font-size: 1.1rem;
   }
+
+  // Light mode styles
+  &.light {
+    h1 {
+      color: #1a1a1a;
+    }
+
+    > p {
+      color: rgba(0, 0, 0, 0.7);
+    }
+  }
 }
 
 .contact-cards-container {
@@ -20,6 +31,78 @@
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Chat contact visualization - larger, shadcn/ui-like buttons for quick contact */
+.chat-contact-visualization {
+  display: grid;
+  /* allow the buttons to wrap and shrink to fit narrow chat windows */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.chat-contact-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: all 0.18s cubic-bezier(0.2,0.8,0.2,1);
+  cursor: pointer;
+  text-align: left;
+  align-items: center;
+
+  .icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    flex-shrink: 0;
+  }
+
+  .label-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #ffffff;
+  }
+
+  .sub {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.75);
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(2,6,23,0.5);
+    border-color: var(--card-color, rgba(124,58,237,0.6));
+  }
+
+  // Light mode adjustments
+  .contact_wrapper.light & {
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
+    border: 1px solid rgba(0,0,0,0.06);
+    .label { color: #111827; }
+    .sub { color: rgba(0,0,0,0.6); }
+    .icon-wrap { background: rgba(0,0,0,0.04); }
+  }
+
+  @media (max-width: 700px) {
+    padding: 10px 10px;
+    .icon-wrap { width: 42px; height: 42px; }
+    .label { font-size: 0.92rem; }
+  }
 }
 
 .contact-card {
@@ -66,6 +149,21 @@
       transform: translateX(0);
     }
   }
+
+  // Light mode styles
+  .contact_wrapper.light & {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    &::before {
+      background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+    }
+
+    &:hover {
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+  }
 }
 
 .contact-card-icon {
@@ -82,6 +180,15 @@
   svg {
     font-size: 24px;
     color: rgba(255, 255, 255, 0.8);
+  }
+
+  // Light mode styles
+  .contact_wrapper.light & {
+    background: rgba(0, 0, 0, 0.05);
+
+    svg {
+      color: rgba(0, 0, 0, 0.7);
+    }
   }
 }
 
@@ -108,6 +215,21 @@
     color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
   }
+
+  // Light mode styles
+  .contact_wrapper.light & {
+    h3 {
+      color: #1a1a1a;
+    }
+
+    .contact-card-subtitle {
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+    .contact-card-value {
+      color: rgba(0, 0, 0, 0.8);
+    }
+  }
 }
 
 .contact-card-arrow {
@@ -120,6 +242,13 @@
     font-size: 20px;
     color: rgba(255, 255, 255, 0.6);
   }
+
+  // Light mode styles
+  .contact_wrapper.light & {
+    svg {
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
 }
 
 .contact-cta {
@@ -129,6 +258,13 @@
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.95rem;
     margin: 0;
+  }
+
+  // Light mode styles
+  .contact_wrapper.light & {
+    p {
+      color: rgba(0, 0, 0, 0.6);
+    }
   }
 }
 
@@ -374,8 +510,8 @@
   backdrop-filter: blur(10px);
   border-radius: 16px;
   width: 100%;
-  max-width: 400px;
-  height: 500px;
+  max-width: 550px;
+  height: 650px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -717,7 +853,7 @@
   
   .chatbot-modal {
     max-width: none;
-    height: 450px;
+    height: 600px;
   }
   
   .chatbot-toggle {

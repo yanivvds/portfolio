@@ -25,6 +25,14 @@
     transition: transform .2s;
     margin: 0 auto;
 }
+
+/* Ensure project thumbnails are a consistent 16:9 crop */
+.project-thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+}
   
 .zoom:hover {
     transform: scale(1.05);
@@ -343,6 +351,101 @@
     color: rgba(0, 0, 0, 0.5);
 }
 
+// Project header with AI button
+.project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 16px 0 12px 0;
+    gap: 12px;
+    
+    h2 {
+        margin: 0;
+        flex: 1;
+        font-size: 1.5rem;
+        font-weight: 600;
+        
+        &:hover {
+            text-decoration: underline;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+        }
+    }
+}
+
+// AI Chat Button Styling
+.ai-chat-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    text-transform: none;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+    
+    &:hover {
+        background: rgba(80, 0, 202, 0.2);
+        border-color: rgba(80, 0, 202, 0.4);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(80, 0, 202, 0.3);
+        
+        .ai-icon {
+            color: #ff6b35;
+            transform: scale(1.1);
+        }
+    }
+    
+    &:active {
+        transform: translateY(0);
+    }
+    
+    .ai-icon {
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 25%, #c084fc 50%, #ddd6fe 75%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
+        animation: sparkle 2s ease-in-out infinite;
+    }
+}
+
+// Light mode styles for AI button
+.light-mode .ai-chat-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.8);
+    
+    &:hover {
+        background: rgba(80, 0, 202, 0.1);
+        border-color: rgba(80, 0, 202, 0.3);
+        color: #5000ca;
+    }
+    
+    .ai-icon {
+        color: rgba(0, 0, 0, 0.6);
+        background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 25%, #a855f7 50%, #c084fc 75%, #7c3aed 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.3));
+        animation: sparkle 2s ease-in-out infinite;
+    }
+}
+
 @media screen {
     @media (max-width: 700px) {
         .projects-container {
@@ -358,35 +461,67 @@
         .projects-container .projects-grid .project {
             padding-bottom: 5%;
         }
-
-        .travel-modal {
-            max-width: 95vw;
-            margin: 20px;
-            border-radius: 16px;
-        }
-
-        .travel-modal-header {
-            padding: 20px 24px;
+        
+        .project-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
             
-            h3 {
-                font-size: 1.4rem;
+            h2 {
+                font-size: 1.3rem;
             }
         }
-
-        .travel-modal-content {
-            padding: 24px 20px;
-        }
-
-        .travel-modal-item {
-            padding: 18px 20px;
+        
+        .ai-chat-btn {
+            align-self: flex-end;
+            font-size: 0.75rem;
+            padding: 6px 10px;
             
-            h4 {
-                font-size: 1.05rem;
-            }
-            
-            p {
-                font-size: 0.85rem;
+            .ai-icon {
+                font-size: 14px;
+                animation: sparkle 2s ease-in-out infinite;
             }
         }
+    }
+
+    .travel-modal {
+        max-width: 95vw;
+        margin: 20px;
+        border-radius: 16px;
+    }
+
+    .travel-modal-header {
+        padding: 20px 24px;
+        
+        h3 {
+            font-size: 1.4rem;
+        }
+    }
+
+    .travel-modal-content {
+        padding: 24px 20px;
+    }
+
+    .travel-modal-item {
+        padding: 18px 20px;
+        
+        h4 {
+            font-size: 1.05rem;
+        }
+        
+        p {
+            font-size: 0.85rem;
+        }
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4)) brightness(1);
+        transform: scale(1);
+    }
+    50% {
+        filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.6)) brightness(1.1);
+        transform: scale(1.05);
     }
 }

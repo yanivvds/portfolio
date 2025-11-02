@@ -5,3 +5,8 @@ export { default as Expertise } from "./Expertise";
 export { default as Timeline } from "./Timeline";
 export { default as Project } from "./Project";
 export { default as Contact } from "./Contact";
+export { default as Lanyard } from "./Lanyard";
+export { default as Threads } from "./Threads";
+export { default as FadeIn } from "./FadeIn";
+export { default as TestPage } from "./TestPage";
+export { default as TestPage2 } from "./TestPage2";
