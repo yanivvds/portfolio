@@ -27,7 +27,7 @@ import '../assets/styles/Project.scss';
 
 // YouTube video URLs instead of local files
 const KPNeasyModeVideo = 'https://youtube.com/shorts/CIz3zKpBEF8';
-const KPNkatVideo = 'https://youtube.com/shorts/GlrC3Jvr170';
+const KPNkatVideo = 'https://youtube.com/shorts/GlrC3Jvr170'; // 
 
 function Project({ parentToChild, openChatWithMessage }: { parentToChild?: { mode: string }, openChatWithMessage?: (message: string, projectName?: string, isFollowUp?: boolean) => void }) {
     const [showTravelModal, setShowTravelModal] = useState(false);
