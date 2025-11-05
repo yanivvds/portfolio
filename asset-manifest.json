@@ -1,28 +1,23 @@
 {
   "files": {
-    "main.css": "/portfolio/static/css/main.2160e3ba.css",
-    "main.js": "/portfolio/static/js/main.38a557db.js",
+    "main.css": "/portfolio/static/css/main.0c905444.css",
+    "main.js": "/portfolio/static/js/main.398bd4c2.js",
     "static/js/453.af57a582.chunk.js": "/portfolio/static/js/453.af57a582.chunk.js",
-    "static/media/mock10.png": "/portfolio/static/media/mock10.2d05b02ba569a430a255.png",
-    "static/media/mock09.png": "/portfolio/static/media/mock09.e18677ccfc932e52d754.png",
+    "static/media/TravelinsiderTips.png": "/portfolio/static/media/TravelinsiderTips.54418636986994de7bfa.png",
+    "static/media/FastAPI.png": "/portfolio/static/media/FastAPI.0679fa9457fe83d9679f.png",
+    "static/media/kalff.png": "/portfolio/static/media/kalff.9c0faa09d36e081e450c.png",
     "static/media/mock08.png": "/portfolio/static/media/mock08.13f46873fdbd382f4b76.png",
-    "static/media/mock04.png": "/portfolio/static/media/mock04.f7b5679efade992a078c.png",
+    "static/media/vibegroup.png": "/portfolio/static/media/vibegroup.0dbc8901c6a769e70d82.png",
     "static/media/bg-light.png": "/portfolio/static/media/bg-light.bac0efb485244a522981.png",
-    "static/media/mock07.png": "/portfolio/static/media/mock07.3f1110f482232b33c6a2.png",
-    "static/media/mock05.png": "/portfolio/static/media/mock05.4faafa70d200d1519a34.png",
-    "static/media/mock06.png": "/portfolio/static/media/mock06.ea816617e0d0fa0f63ca.png",
-    "static/media/bg-dark.png": "/portfolio/static/media/bg-dark.f420c6b8458af72de935.png",
-    "static/media/mock01.png": "/portfolio/static/media/mock01.61bd486a54bf6e17ee5a.png",
-    "static/media/mock02.png": "/portfolio/static/media/mock02.bced48ae9cdda3acf1a3.png",
-    "static/media/mock03.png": "/portfolio/static/media/mock03.a4600719e0b5d2a3155b.png",
+    "static/media/KPNEasyMode.png": "/portfolio/static/media/KPNEasyMode.29bcdf7ff692cf75bfc3.png",
     "static/media/profile.jpeg": "/portfolio/static/media/profile.24a96ce44fd4947081e6.jpeg",
     "index.html": "/portfolio/index.html",
-    "main.2160e3ba.css.map": "/portfolio/static/css/main.2160e3ba.css.map",
-    "main.38a557db.js.map": "/portfolio/static/js/main.38a557db.js.map",
+    "main.0c905444.css.map": "/portfolio/static/css/main.0c905444.css.map",
+    "main.398bd4c2.js.map": "/portfolio/static/js/main.398bd4c2.js.map",
     "453.af57a582.chunk.js.map": "/portfolio/static/js/453.af57a582.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.2160e3ba.css",
-    "static/js/main.38a557db.js"
+    "static/css/main.0c905444.css",
+    "static/js/main.398bd4c2.js"
   ]
 }
