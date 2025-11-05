@@ -407,7 +407,7 @@ If the model detects that it cannot produce valid JSON (due to conflicting instr
 }
 `;
 
-    // OpenAI Responses API integration with file search and streaming
+    // Secure API integration using internal Vercel serverless functions
     const getChatbotResponse = async (userMessage: string, onStreamUpdate?: (chunk: string) => void) => {
         try {
             // Check cache first for common questions
@@ -417,114 +417,100 @@ If the model detects that it cannot produce valid JSON (due to conflicting instr
                 return responseCache[cacheKey];
             }
 
-            // Responses API request with file search enabled and streaming
+            // Determine API endpoint based on streaming preference
+            const apiEndpoint = onStreamUpdate ? '/api/chat-stream' : '/api/chat';
+            
+            // Prepare request body for our internal API
             const requestBody = {
-                model: "gpt-5-nano",
-                instructions: systemPrompt,
-                input: currentProjectContext
-                    ? `About the ${currentProjectContext} project: ${userMessage}`
-                    : userMessage,
-                tools: [
-                    {
-                        type: "file_search",
-                        vector_store_ids: ["vs_68fe3aa375b48191a9b50492f9eec576"]
-                    }
-                ],
-                stream: true
+                message: userMessage,
+                projectContext: currentProjectContext
             };
 
-            console.log('Request body:', JSON.stringify(requestBody, null, 2));
-
-            const response = await fetch('https://api.openai.com/v1/responses', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestBody)
+            console.log('🎯 Making request to internal API:', apiEndpoint);
+            console.log('📤 Request body:', {
+                message: userMessage.substring(0, 100) + (userMessage.length > 100 ? '...' : ''),
+                projectContext: currentProjectContext,
+                messageLength: userMessage.length
             });
 
-            console.log('Response status:', response.status);
-            console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+            if (onStreamUpdate) {
+                // Handle streaming response
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('API Error response:', errorText);
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status}`);
+                }
 
-                // If Responses API fails, fallback to Chat Completions API
-                console.log('Falling back to Chat Completions API...');
-                return await fallbackToChatCompletions(userMessage, currentProjectContext, cacheKey);
-            }
+                // Handle Server-Sent Events
+                const reader = response.body?.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let finalResponse = null;
 
-            // Handle streaming response
-            if (!response.body) {
-                throw new Error('Response body is not available');
-            }
+                if (!reader) {
+                    throw new Error('Response body is not available');
+                }
 
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let fullResponse = '';
-            let buffer = '';
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
 
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
+                    const chunk = decoder.decode(value, { stream: true });
+                    buffer += chunk;
 
-                const chunk = decoder.decode(value, { stream: true });
-                buffer += chunk;
+                    // Process complete lines from the buffer
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || ''; // Keep incomplete line in buffer
 
-                // Process complete lines from the buffer
-                const lines = buffer.split('\n');
-                buffer = lines.pop() || ''; // Keep incomplete line in buffer
-
-                for (const line of lines) {
-                    if (line.trim() === '') continue;
-                    if (line.startsWith('data: ')) {
-                        const data = line.slice(6).trim();
-                        if (data === '[DONE]') continue;
-
-                        try {
-                            const event = JSON.parse(data);
-                            console.log('Streaming event:', event);
-
-                            // Handle different event types
-                            if (event.type === 'response.output_text.delta') {
-                                const delta = event.delta;
-                                if (delta) {
-                                    fullResponse += delta;
-                                    if (onStreamUpdate) {
-                                        onStreamUpdate(delta);
-                                    }
+                    for (const line of lines) {
+                        if (line.trim() === '') continue;
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6).trim();
+                            if (data === '[DONE]') {
+                                if (finalResponse) {
+                                    return finalResponse;
                                 }
-                            } else if (event.type === 'response.completed') {
-                                // Response is complete
-                                console.log('Response completed, full response:', fullResponse);
-                                break;
+                                continue;
                             }
-                        } catch (parseError) {
-                            console.error('Failed to parse streaming event:', parseError);
+
+                            try {
+                                const event = JSON.parse(data);
+                                console.log('Streaming event:', event);
+
+                                // Handle streaming content
+                                if (event.content) {
+                                    onStreamUpdate(event.content);
+                                }
+
+                                // Handle final response
+                                if (event.final) {
+                                    finalResponse = event.final;
+                                    // Cache successful responses for common questions
+                                    setResponseCache(prev => ({
+                                        ...prev,
+                                        [cacheKey]: event.final
+                                    }));
+                                }
+
+                                // Handle errors
+                                if (event.error) {
+                                    throw new Error(event.error);
+                                }
+                            } catch (parseError) {
+                                console.error('Failed to parse streaming event:', parseError);
+                            }
                         }
                     }
                 }
-            }
 
-            console.log('Final extracted output text:', fullResponse);
-
-            try {
-                const parsedResponse = JSON.parse(fullResponse);
-                // Cache successful responses for common questions
-                if (!onStreamUpdate) { // Only cache non-streaming responses
-                    setResponseCache(prev => ({
-                        ...prev,
-                        [cacheKey]: parsedResponse
-                    }));
-                }
-                return parsedResponse;
-            } catch (parseError) {
-                console.error('Failed to parse JSON response:', parseError);
-                // Fallback response
-                return {
-                    response: fullResponse || "I received your message but had trouble formatting my response. Please try again.",
+                return finalResponse || {
+                    response: "I received your message but had trouble with the streaming response. Please try again.",
                     followUpQuestions: ["How can I contact Yaniv?"],
                     interactiveElement: {
                         type: 'contact',
@@ -542,10 +528,37 @@ If the model detects that it cannot produce valid JSON (due to conflicting instr
                         }
                     }
                 };
+
+            } else {
+                // Handle non-streaming response
+                const response = await fetch(apiEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Cache successful responses for common questions
+                setResponseCache(prev => ({
+                    ...prev,
+                    [cacheKey]: data
+                }));
+
+                return data;
             }
 
         } catch (error) {
-            console.error('OpenAI Responses API error:', error);
+            console.error('🚨 INTERNAL API ERROR:', error);
+            console.error('🚨 Error type:', typeof error);
+            console.error('🚨 Error message:', error instanceof Error ? error.message : 'Unknown error');
+            console.error('🚨 Error stack:', error instanceof Error ? error.stack : 'No stack trace');
 
             // Enhanced error handling with fallback to contact
             return {
@@ -577,92 +590,6 @@ If the model detects that it cannot produce valid JSON (due to conflicting instr
         }
     };
 
-    // Fallback to Chat Completions API if Responses API fails
-    const fallbackToChatCompletions = async (userMessage: string, currentProjectContext: string | null, cacheKey: string) => {
-        try {
-            const messages = [
-                {
-                    role: 'system',
-                    content: systemPrompt
-                },
-                {
-                    role: 'user',
-                    content: currentProjectContext
-                        ? `About the ${currentProjectContext} project: ${userMessage}`
-                        : userMessage
-                }
-            ];
-
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'gpt-5-nano',
-                    messages: messages,
-                    max_tokens: 2000
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`Chat completions failed: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const assistantMessage = data.choices[0].message.content;
-
-            try {
-                const parsedResponse = JSON.parse(assistantMessage);
-                // Cache fallback responses too
-                setResponseCache(prev => ({
-                    ...prev,
-                    [cacheKey]: parsedResponse
-                }));
-                return parsedResponse;
-            } catch {
-                return {
-                    response: assistantMessage,
-                    followUpQuestions: ["How can I contact Yaniv?", "What are Yaniv's main skills?"],
-                    interactiveElement: {
-                        type: 'text',
-                        content: 'Response from AI assistant',
-                        metadata: {}
-                    }
-                };
-            }
-
-        } catch (error) {
-            console.error('Chat Completions fallback failed:', error);
-            return {
-                response: "I'm having trouble connecting right now, but you can always reach out to Yaniv directly!",
-                followUpQuestions: ["What's the best way to contact Yaniv?"],
-                interactiveElement: {
-                    type: 'contact',
-                    content: 'Ways to contact Yaniv',
-                    metadata: {
-                        contacts: [
-                            {
-                                id: "email",
-                                title: "Email",
-                                subtitle: "Drop me a line",
-                                value: "yanivvds@gmail.com",
-                                link: "mailto:yanivvds@gmail.com"
-                            },
-                            {
-                                id: "linkedin",
-                                title: "LinkedIn",
-                                subtitle: "Let's connect",
-                                value: "/in/yanivvds",
-                                link: "https://www.linkedin.com/in/yanivvds/"
-                            }
-                        ]
-                    }
-                }
-            };
-        }
-    };
 
     // Generate detailed project introduction message
     const getProjectIntroductionMessage = (projectName: string) => {

@@ -22,10 +22,12 @@ import mock10 from '../assets/images/mock10.png';
 import vibegroup from '../assets/images/vibegroup.png';
 import KPNEasyMode from '../assets/images/KPNEasyMode.png';
 import FastAPI from '../assets/images/FastAPI.png';
-import TravelInsiderTips from '../assets/images/TravelinsiderTips.png';
-import KPNeasyModeVideo from '../assets/videos/KPNeasyMode.MP4';
-import KPNkatVideo from '../assets/videos/KPNkat.mov';
+import TravelInsiderTips from '../assets/images/TravelInsiderTips.png';
 import '../assets/styles/Project.scss';
+
+// YouTube video URLs instead of local files
+const KPNeasyModeVideo = 'https://youtube.com/shorts/CIz3zKpBEF8';
+const KPNkatVideo = 'https://youtube.com/shorts/GlrC3Jvr170';
 
 function Project({ parentToChild, openChatWithMessage }: { parentToChild?: { mode: string }, openChatWithMessage?: (message: string, projectName?: string, isFollowUp?: boolean) => void }) {
     const [showTravelModal, setShowTravelModal] = useState(false);
@@ -44,8 +46,10 @@ function Project({ parentToChild, openChatWithMessage }: { parentToChild?: { mod
     };
 
     // Handle video modal opening
-    const openVideoModal = (videoSrc: string) => {
-        setCurrentVideo(videoSrc);
+    const openVideoModal = (videoUrl: string) => {
+        // Convert YouTube shorts URL to embeddable format
+        const embedUrl = videoUrl.replace('youtube.com/shorts/', 'youtube.com/embed/');
+        setCurrentVideo(embedUrl);
         setShowVideoModal(true);
     };
 
@@ -277,14 +281,14 @@ function Project({ parentToChild, openChatWithMessage }: { parentToChild?: { mod
                         </button>
                     </div>
                     <div className="video-modal-content">
-                        <video
-                            controls
-                            autoPlay
+                        <iframe
                             className="video-player"
                             src={currentVideo}
-                        >
-                            Your browser does not support the video tag.
-                        </video>
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                        ></iframe>
                     </div>
                 </div>
             </div>

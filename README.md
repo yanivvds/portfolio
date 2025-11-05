@@ -38,13 +38,49 @@ This is my personal portfolio website showcasing my work as an AI Engineer and B
     npm install
     ```
 
-3. Start the development server:
+3. **For development with AI chat functionality:**
+
+    ```bash
+    npm run dev:full
+    # or directly:
+    npx vercel dev
+    ```
+    This uses Vercel's development server to run both the React app and API functions locally.
+
+4. **For development without API (frontend only):**
 
     ```bash
     npm start
     ```
+    This runs only the React app - API calls will fail in development mode.
 
-4. Open [http://localhost:3000](http://localhost:3000) to view the portfolio in the browser.
+5. Open [http://localhost:3000](http://localhost:3000) to view the portfolio in the browser.
+
+## 🤖 AI Chat Features
+
+The portfolio includes an AI-powered chatbot that uses OpenAI's GPT-4 to provide intelligent responses about projects and background. The chat system includes:
+
+- **Interactive Discussions**: Ask questions about specific projects or technical background
+- **Smart Context Awareness**: Responses are tailored based on the project context
+- **Contact Integration**: Direct links to contact methods when appropriate
+- **Follow-up Suggestions**: Intelligent suggestions for next questions
+- **Streaming Support**: Real-time response streaming for better UX
+
+### API Configuration
+
+The chat functionality uses Vercel serverless functions. To enable the AI features:
+
+1. **Get an OpenAI API key** from [OpenAI Platform](https://platform.openai.com/account/api-keys)
+2. **Set environment variables** in your Vercel project:
+   - `OPENAI_API_KEY`: Your OpenAI API key
+3. **Deploy to Vercel** to enable the serverless API endpoints
+
+### Troubleshooting
+
+**"vercel dev must not recursively invoke itself" Error:**
+- Use `npx vercel dev` instead of `npm run dev:full`
+- Or run: `npm run dev:full` (uses the renamed script)
+- This error occurs when npm scripts conflict with Vercel's internal configuration
 
 ## Deployment
 

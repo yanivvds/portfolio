@@ -124,11 +124,14 @@ function Contact({ parentToChild, chatProps }: {
       if (!interactiveElement) return null;
 
       // If assistant intentionally specifies no interactive content, don't render a visualization
-      if (interactiveElement.type === 'text') {
-        const textContent = interactiveElement.content || '';
-        if (!textContent || textContent === 'No interactive content required.') return null;
+      if (interactiveElement.type === 'text' &&
+          interactiveElement.content === 'No interactive content required.' &&
+          (!interactiveElement.metadata || Object.keys(interactiveElement.metadata).length === 0)) {
+        return null;
+      }
 
-        // For 'text' interactiveElement we simply render the content as-is.
+      // For 'text' interactiveElement we simply render the content as-is.
+      if (interactiveElement.type === 'text') {
         return (
           <div style={{ margin: '12px 0', color: isDarkMode ? '#cbd5e1' : '#374151' }}>
             {interactiveElement.content}

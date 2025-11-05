@@ -36,6 +36,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev:full": "vercel dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@types/react-vertical-timeline-component": "^3.3.6",
-    "gh-pages": "^6.3.0"
+    "gh-pages": "^6.3.0",
+    "@vercel/node": "^3.0.0"
   }
 }

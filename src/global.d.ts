@@ -1,9 +1,1 @@
-declare module '*.mov' {
-  const src: string;
-  export default src;
-}
-
-declare module '*.MP4' {
-  const src: string;
-  export default src;
-}
+// Video file declarations removed - now using YouTube embeds
