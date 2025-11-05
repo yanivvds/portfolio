@@ -408,3 +408,4 @@ If issues arise, you can quickly rollback by:
 ---
 
 This implementation maintains the exact same user experience while leveraging the improved performance and capabilities of the OpenAI Responses API with native file search integration.
+
